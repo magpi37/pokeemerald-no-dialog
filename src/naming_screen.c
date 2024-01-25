@@ -1509,7 +1509,29 @@ static bool8 KeyboardKeyHandler_Backspace(u8 input)
 
 static bool8 KeyboardKeyHandler_OK(u8 input)
 {
+    u8 i;
+
     TryStartButtonFlash(BUTTON_OK, TRUE, FALSE);
+
+    // stay in the naming menu if the name is empty
+    if (!StringLength(sNamingScreen->textBuffer)) 
+    {
+        return FALSE;
+    }
+
+    // or if it contains only blank characters
+    for (i = 0; i < sNamingScreen->template->maxChars; i++)
+    {
+        if (sNamingScreen->textBuffer[i] != CHAR_SPACE && sNamingScreen->textBuffer[i] != EOS)
+        {
+            break;
+        }
+    }
+    if (i == sNamingScreen->template->maxChars) 
+    {
+        return FALSE;
+    }
+
     if (input == INPUT_A_BUTTON)
     {
         PlaySE(SE_SELECT);
